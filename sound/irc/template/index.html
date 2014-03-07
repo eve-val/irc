@@ -34,7 +34,7 @@
 <div class="row">
     <div class="col-md-6">
         <%self:panel title="IRC Username" cls="user">
-            <div class="irc-name">${web.user.character.name}</div>
+            <div class="irc-name">${web.user.transform_to_nick()}</div>
         </%self:panel>
     </div>
     
@@ -44,14 +44,14 @@
             <div class="input-group">
                 <input type="password" class="form-control input-lg" id="password" placeholder="Enter new password here.">
                 <span class="input-group-addon submitPassword">
-                    <i class="fa fa-fw fa-2x fa-circle-o${' hidden' if web.user.has_password else ''} incomplete text-danger"></i>
+                    <i class="fa fa-fw fa-2x fa-circle-o incomplete text-danger"></i>
                     <i class="fa fa-fw fa-2x fa-times hidden" data-score="0"></i>
                     <i class="fa fa-fw fa-2x fa-times text-danger hidden" data-score="1"></i>
                     <i class="fa fa-fw fa-2x fa-times text-warning hidden" data-score="2"></i>
                     <i class="fa fa-fw fa-2x fa-circle-o text-info hidden" data-score="3"></i>
                     <i class="fa fa-fw fa-2x fa-check text-success hidden" data-score="4"></i>
                     <i class="fa fa-fw fa-2x fa-cog fa-spin hidden trying"></i>
-                    <i class="fa fa-fw fa-2x fa-check${' hidden' if not web.user.has_password else ''} success text-success"></i>
+                    <i class="fa fa-fw fa-2x fa-check hidden success text-success"></i>
                 </span>
             </div>
         </%self:panel>

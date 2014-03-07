@@ -49,6 +49,9 @@ class Ticket(Document):
     expires = DateTimeField(db_field='e')
     seen = DateTimeField(db_field='s')  # TODO: Update this when the user connects/disconnects.
     registered = DateTimeField(db_field='r')
+
+    def transform_to_nick(self):
+      return re.sub('[^A-Za-z0-9]+', '_', self.character.name.lower())
     
     def __repr__(self):
         return "<Ticket {0.id} \"{0.character.name}\">".format(self)
