@@ -68,16 +68,12 @@ class RootController(Controller, StartupMixIn, AuthenticationMixIn):
             atheme = self.get_atheme()
             try:
                 irc_nick = user.transform_to_nick()
-                exists = self.user_exists(atheme)
-                if not exists:
-                    result = atheme.command('NickServ', 'FREGISTER',
-                                            irc_nick, password, '%s@%s' % (irc_nick, config['irc.core_domain']))
-                    self.process_groups(atheme)
-                    self.process_cloak(atheme)
-                else:
-                    self.process_groups(atheme)
-                    self.process_cloak(atheme)
-                    return 'json:', dict(success=False, message="Already registered. Contact #help")
+                if self.user_exists(atheme):
+                    atheme.command('NickServ', 'FDROP', irc_nick)
+                result = atheme.command('NickServ', 'FREGISTER',
+                                        irc_nick, password, '%s@%s' % (irc_nick, config['irc.core_domain']))
+                self.process_groups(atheme)
+                self.process_cloak(atheme)
             finally:
                 atheme.logout()
         except Exception as e:
