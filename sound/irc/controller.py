@@ -51,7 +51,7 @@ class RootController(Controller, StartupMixIn, AuthenticationMixIn):
                     exists = False
                 if not exists:
                     result = c.atheme.command(token, robot_username, robot_ip, 'NickServ', 'FREGISTER',
-                                              irc_nick, password, '%s@auth.of-sound-mind.com' % irc_nick)
+                                              irc_nick, password, '%s@%s' % (irc_nick, config['irc.core_domain']))
                     self.process_groups(c, token)
                     self.process_cloak(c, token)
                 else:
