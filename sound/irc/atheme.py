@@ -6,7 +6,7 @@ class Atheme(object):
         self.username = username
         self.ip = ip
         self.token = self.conn.atheme.login(username, password, ip)
-        if not token:
+        if not self.token:
             raise Exception('Could not get auth token.')
 
     def command(self, service, command, *args):
