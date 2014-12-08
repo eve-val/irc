@@ -51,7 +51,7 @@ class RootController(Controller, StartupMixIn, AuthenticationMixIn):
             atheme = self.get_atheme()
             try:
                 irc_nick = user.transform_to_nick()
-                if not self.exists(atheme):
+                if not self.user_exists(atheme):
                     return 'json:', dict(success=False, message="Can only update access for an existing irc registration")
                 self.process_groups(atheme)
                 self.process_cloak(atheme)
