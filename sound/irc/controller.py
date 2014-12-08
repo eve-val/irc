@@ -27,7 +27,11 @@ class RootController(Controller, StartupMixIn, AuthenticationMixIn):
             atheme.command('GroupServ', 'FLAGS', '!%s' % group, user.transform_to_nick(), '+c')
 
     def process_cloak(self, atheme):
-        atheme.command('NickServ', 'VHOST', user.transform_to_nick(), user.get_cloak())
+        try:
+            atheme.command('NickServ', 'VHOST', user.transform_to_nick(), user.get_cloak())
+        except Fault as f:
+            if f.faultCode != 12: # fault_nochange
+                raise
 
     def passwd(self, password):
         try:
