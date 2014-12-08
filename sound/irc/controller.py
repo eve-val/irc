@@ -18,9 +18,22 @@ log = __import__('logging').getLogger(__name__)
 class RootController(Controller, StartupMixIn, AuthenticationMixIn):
     def index(self):
         if authenticated:
-            return 'sound.irc.template.index', dict()
+            atheme = self.get_atheme()
+            exists = self.user_exists(atheme)
+            return 'sound.irc.template.index', dict(exists=exists)
 
         return 'sound.irc.template.welcome', dict()
+
+    def get_atheme(self):
+        return Atheme(config['irc.backend'], config['irc.username'], config['irc.password'],
+                      config['irc.robotip'])
+
+    def user_exists(self, atheme):
+        try:
+            atheme.command('NickServ', 'INFO', user.transform_to_nick())
+            return True
+        except Fault:
+            return False
 
     def process_groups(self, atheme):
         for group in user.tags:
@@ -33,16 +46,29 @@ class RootController(Controller, StartupMixIn, AuthenticationMixIn):
             if f.faultCode != 12: # fault_nochange
                 raise
 
-    def passwd(self, password):
+    def update_access(self):
         try:
-            atheme = Atheme(config['irc.backend'], config['irc.username'], config['irc.password'],
-                            config['irc.robotip'])
+            atheme = self.get_atheme()
             try:
                 irc_nick = user.transform_to_nick()
-                try:
-                    exists = atheme.command('NickServ', 'INFO', irc_nick)
-                except Fault:
-                    exists = False
+                if not self.exists(atheme):
+                    return 'json:', dict(success=False, message="Can only update access for an existing irc registration")
+                self.process_groups(atheme)
+                self.process_cloak(atheme)
+            finally:
+                atheme.logout()
+        except Exception as e:
+            log.exception("Error attempting to update access.")
+            return 'json:', dict(success=False, message=str(e))
+
+        return 'json:', dict(success=True, message="Updated!")
+
+    def passwd(self, password):
+        try:
+            atheme = self.get_atheme()
+            try:
+                irc_nick = user.transform_to_nick()
+                exists = self.user_exists(atheme)
                 if not exists:
                     result = atheme.command('NickServ', 'FREGISTER',
                                             irc_nick, password, '%s@%s' % (irc_nick, config['irc.core_domain']))

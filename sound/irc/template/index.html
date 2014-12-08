@@ -58,6 +58,17 @@
     </div>
 </div>
 
+% if exists:
+    <div class="row">
+        <div class="col-md-12">
+            <%self:panel title="Update access" cls="user">
+                <input type="button" class="form-control input-lg" id="update-access" />
+                <div id="update-result"></div>
+            </%self:panel>
+        </div>
+    </div>
+% endif
+
 <%block name="post">
     ${parent.post()}
     <script src="/js/zxcvbn-async.js"></script>
@@ -123,6 +134,18 @@
             $('.irc-name').on('focus click doubleclick', function()
             {
                 $(this).selectText();
+            });
+
+            $('#update-access').on('press', function()
+            {
+                $('.update-result').text("updating...");
+                $.post('/update_access', function(result) {
+                    if (result.success) {
+                        $('.update-result').text(result.message);
+                    } else {
+                        $('.update-result').text("error: " + result.message)
+                    }
+                });
             });
         });
     </script>
