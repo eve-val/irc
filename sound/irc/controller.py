@@ -23,45 +23,45 @@ class RootController(Controller, StartupMixIn, AuthenticationMixIn):
         return 'sound.irc.template.welcome', dict()
 
     def process_groups(self, c, token):
-      robot_ip = config['irc.robotip']
-      robot_username = config['irc.username']
-      for group in user.tags:
-        c.atheme.command(token, robot_username, robot_ip, 'GroupServ', 'FLAGS', '!%s' % group, user.transform_to_nick(), '+c')
+        robot_ip = config['irc.robotip']
+        robot_username = config['irc.username']
+        for group in user.tags:
+            c.atheme.command(token, robot_username, robot_ip, 'GroupServ', 'FLAGS', '!%s' % group, user.transform_to_nick(), '+c')
 
     def process_cloak(self, c, token):
-      robot_ip = config['irc.robotip']
-      robot_username = config['irc.username']
-      c.atheme.command(token, robot_username, robot_ip, 'NickServ', 'VHOST',
-                       user.transform_to_nick(), user.get_cloak())
+        robot_ip = config['irc.robotip']
+        robot_username = config['irc.username']
+        c.atheme.command(token, robot_username, robot_ip, 'NickServ', 'VHOST',
+                         user.transform_to_nick(), user.get_cloak())
 
     def passwd(self, password):
         try:
-          robot_ip = config['irc.robotip']
-          robot_username = config['irc.username']
-          c = xmlrpclib.ServerProxy(config['irc.backend'])
-          token = c.atheme.login(robot_username, config['irc.password'], robot_ip)
-          if not token:
-            raise Exception('Could not get auth token.')
-          try:
-            irc_nick = user.transform_to_nick()
+            robot_ip = config['irc.robotip']
+            robot_username = config['irc.username']
+            c = xmlrpclib.ServerProxy(config['irc.backend'])
+            token = c.atheme.login(robot_username, config['irc.password'], robot_ip)
+            if not token:
+                raise Exception('Could not get auth token.')
             try:
-              exists = c.atheme.command(token, robot_username, robot_ip, 'NickServ', 'INFO',
-                                        irc_nick)
-            except Fault:
-              exists = False
-            if not exists:
-              result = c.atheme.command(token, robot_username, robot_ip, 'NickServ', 'FREGISTER',
-                                        irc_nick, password, '%s@auth.of-sound-mind.com' % irc_nick)
-              self.process_groups(c, token)
-              self.process_cloak(c, token)
-            else:
-              self.process_groups(c, token)
-              self.process_cloak(c, token)
-              return 'json:', dict(success=False, message="Already registered. Contact #help")
-          finally:
-            c.atheme.logout(token, robot_username)
+                irc_nick = user.transform_to_nick()
+                try:
+                    exists = c.atheme.command(token, robot_username, robot_ip, 'NickServ', 'INFO',
+                                              irc_nick)
+                except Fault:
+                    exists = False
+                if not exists:
+                    result = c.atheme.command(token, robot_username, robot_ip, 'NickServ', 'FREGISTER',
+                                              irc_nick, password, '%s@auth.of-sound-mind.com' % irc_nick)
+                    self.process_groups(c, token)
+                    self.process_cloak(c, token)
+                else:
+                    self.process_groups(c, token)
+                    self.process_cloak(c, token)
+                    return 'json:', dict(success=False, message="Already registered. Contact #help")
+            finally:
+                c.atheme.logout(token, robot_username)
         except Exception as e:
             log.exception("Error attempting to assign password.")
             return 'json:', dict(success=False, message=str(e))
-        
+
         return 'json:', dict(success=True, message=result)
