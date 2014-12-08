@@ -28,6 +28,12 @@ class RootController(Controller, StartupMixIn, AuthenticationMixIn):
       for group in user.tags:
         c.atheme.command(token, robot_username, robot_ip, 'GroupServ', 'FLAGS', '!%s' % group, user.transform_to_nick(), '+c')
 
+    def process_cloak(self, c, token):
+      robot_ip = config['irc.robotip']
+      robot_username = config['irc.username']
+      c.atheme.command(token, robot_username, robot_ip, 'NickServ', 'VHOST',
+                       user.transform_to_nick(), user.get_cloak())
+
     def passwd(self, password):
         try:
           robot_ip = config['irc.robotip']
@@ -47,8 +53,10 @@ class RootController(Controller, StartupMixIn, AuthenticationMixIn):
               result = c.atheme.command(token, robot_username, robot_ip, 'NickServ', 'FREGISTER',
                                         irc_nick, password, '%s@auth.of-sound-mind.com' % irc_nick)
               self.process_groups(c, token)
+              self.process_cloak(c, token)
             else:
               self.process_groups(c, token)
+              self.process_cloak(c, token)
               return 'json:', dict(success=False, message="Already registered. Contact #help")
           finally:
             c.atheme.logout(token, robot_username)

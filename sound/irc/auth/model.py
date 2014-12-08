@@ -52,7 +52,11 @@ class Ticket(Document):
 
     def transform_to_nick(self):
       return re.sub('[^A-Za-z0-9]+', '_', self.character.name.lower())
-    
+
+    def get_cloak(self):
+      return '%s/%s' % (re.sub('[^A-Za-z0-9]+', '-', self.corporation.name.lower()),
+                        re.sub('[^A-Za-z0-9]+', '-', self.character.name.lower()))
+
     def __repr__(self):
         return "<Ticket {0.id} \"{0.character.name}\">".format(self)
     
