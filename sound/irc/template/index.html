@@ -61,8 +61,8 @@
 % if exists:
     <div class="row">
         <div class="col-md-12">
-            <%self:panel title="Update access" cls="user">
-                <input type="button" class="form-control input-lg" id="update-access" />
+            <%self:panel title="Update Access" cls="user">
+                <input type="button" class="form-control input-lg" id="update-access" value="Update" />
                 <div id="update-result"></div>
             </%self:panel>
         </div>
@@ -136,7 +136,7 @@
                 $(this).selectText();
             });
 
-            $('#update-access').on('press', function()
+            $('#update-access').on('click', function()
             {
                 $('.update-result').text("updating...");
                 $.post('/update_access', function(result) {
