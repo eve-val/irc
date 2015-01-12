@@ -14,7 +14,10 @@
         If this is your first time here, you’ll need to enter a password below before accessing IRC.
     </p>
     <p>
-        If you are returning, you can use the password field below to change your password.
+        If you are returning, you can use the password field below to change your password, or press the really big button to update your access to restricted channels.
+    </p>
+    <p>
+        If you're having difficulty, <a href="http://irc.lc/irc.of-sound-mind.com:%2b6697/help/${web.user.transform_to_nick()|u} - irc help">contact the IT Team</a>.
     </p>
 </div>
 
@@ -30,6 +33,16 @@
 </div>
 </%def>
 
+% if exists:
+    <div class="row">
+        <div class="col-md-12">
+            <%self:panel title="Update Access" cls="user">
+                <input type="button" class="btn btn-primary form-control input-lg" id="update-access" value="Press this to update your restricted channel access." />
+                <div id="update-result"></div>
+            </%self:panel>
+        </div>
+    </div>
+% endif
 
 <div class="row">
     <div class="col-md-6">
@@ -57,17 +70,6 @@
         </%self:panel>
     </div>
 </div>
-
-% if exists:
-    <div class="row">
-        <div class="col-md-12">
-            <%self:panel title="Update Access" cls="user">
-                <input type="button" class="form-control input-lg" id="update-access" value="Update" />
-                <div id="update-result"></div>
-            </%self:panel>
-        </div>
-    </div>
-% endif
 
 <%block name="post">
     ${parent.post()}
