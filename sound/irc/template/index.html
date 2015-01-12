@@ -52,7 +52,7 @@
     </div>
     
     <div class="col-md-6">
-        <%self:panel title="Update Password" cls="passwd">
+        <%self:panel title="${'Update' if exists else 'Set'} Password" cls="passwd">
             <label class="sr-only" for="password">Password</label>
             <div class="input-group">
                 <input type="password" class="form-control input-lg" id="password" placeholder="Enter new password here.">
