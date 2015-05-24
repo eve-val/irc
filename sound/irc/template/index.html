@@ -140,12 +140,12 @@
 
             $('#update-access').on('click', function()
             {
-                $('.update-result').text("updating...");
+                $('#update-result').text("updating...");
                 $.post('/update_access', function(result) {
                     if (result.success) {
-                        $('.update-result').text(result.message);
+                        $('#update-result').text(result.message);
                     } else {
-                        $('.update-result').text("error: " + result.message)
+                        $('#update-result').text("error: " + result.message)
                     }
                 });
             });
