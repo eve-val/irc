@@ -60,10 +60,9 @@ class RootController(Controller, StartupMixIn, AuthenticationMixIn):
                 atheme.logout()
         except Exception as e:
             log.exception("Error attempting to update access.")
-            return 'json:', dict(success=False, message=str(e))
+            return 'json:', dict(success=False, message="Error updating access! {}" + str(e))
 
-        return 'json:', dict(success=True, message="Updated!")
-
+        return 'json:', dict(success=True, message="Updated with groups: " + ", ".join(user.tags))
     def passwd(self, password):
         try:
             authenticate(user.token)
