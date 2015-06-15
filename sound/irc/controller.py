@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 
 from xmlrpclib import Fault
 
-from web.auth import authenticated, user
+from web.auth import authenticate, authenticated, user
 from web.core import Controller, config
 
 from sound.irc.atheme import Atheme
