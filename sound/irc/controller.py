@@ -48,6 +48,7 @@ class RootController(Controller, StartupMixIn, AuthenticationMixIn):
 
     def update_access(self):
         try:
+            authenticate(user.token)
             atheme = self.get_atheme()
             try:
                 irc_nick = user.transform_to_nick()
@@ -65,6 +66,7 @@ class RootController(Controller, StartupMixIn, AuthenticationMixIn):
 
     def passwd(self, password):
         try:
+            authenticate(user.token)
             atheme = self.get_atheme()
             try:
                 irc_nick = user.transform_to_nick()
