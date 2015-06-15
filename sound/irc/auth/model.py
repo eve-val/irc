@@ -70,8 +70,11 @@ class Ticket(Document):
         user = cls.objects(character__id=result.character.id).first()
         
         if not user:
-            user = cls(token=identifier, expires=result.expires, seen=datetime.utcnow())
-        
+            user = cls()
+
+        user.token = identifier
+        user.expires = result.expires
+        user.seen = datetime.utcnow()
         user.character.id = result.character.id
         user.character.name = result.character.name
         user.corporation.id = result.corporation.id
